@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@layer base {
+    body {
+        @apply bg-rose-50 text-rose-950;
+    }
+}
+
+@layer components {
+    .glass {
+        @apply bg-white/30 backdrop-blur-lg border border-white/20;
+    }
+
+    /* Screen reader only class for accessibility */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+}
