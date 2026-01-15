@@ -14,10 +14,6 @@ const Header = () => {
           <h2 className="text-white text-sm font-bold leading-tight tracking-tight">
             Bonjour, Chef
           </h2>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-premium-gold flex items-center gap-1">
-            <span className="material-symbols-outlined !text-[12px]">workspace_premium</span>
-            Premium
-          </span>
         </div>
       </div>
       <div className="flex items-center gap-2">
