@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Header from './components/Header';
 import BottomNav from './components/BottomNav';
 import IngredientPicker from './components/IngredientPicker';
 import MagicRoulette from './components/MagicRoulette';
@@ -64,9 +63,6 @@ function App() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-mesh overflow-x-hidden pb-24 text-white font-display selection:bg-primary/30">
-      {/* Header */}
-      <Header />
-
       {/* Main Content */}
       {!currentRecipe ? (
         <>
