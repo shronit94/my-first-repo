@@ -5,43 +5,45 @@ const LoadingSkeleton = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="w-full max-w-6xl mx-auto"
+      className="w-full px-6 py-12"
     >
-      <div className="glass-card overflow-hidden">
-        {/* Image Skeleton */}
-        <div className="relative h-80 shimmer-skeleton" />
+      <div className="flex flex-col items-center gap-6">
+        {/* Spinning Icon */}
+        <motion.span
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className="material-symbols-outlined text-primary !text-[80px]"
+        >
+          progress_activity
+        </motion.span>
 
-        {/* Content Skeleton */}
-        <div className="p-6">
-          {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="backdrop-blur-md bg-white/5 rounded-xl p-4 border border-white/10"
-              >
-                <div className="w-8 h-8 mx-auto mb-2 rounded-full shimmer-skeleton" />
-                <div className="w-12 h-8 mx-auto mb-2 rounded shimmer-skeleton" />
-                <div className="w-16 h-3 mx-auto rounded shimmer-skeleton" />
-              </div>
-            ))}
-          </div>
+        {/* Loading Text */}
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-bold text-white">AI Agent Researching...</h3>
+          <p className="text-white/60 text-sm">
+            Scouring the web for the perfect recipe match
+          </p>
+        </div>
 
-          {/* Title Skeleton */}
-          <div className="mb-6">
-            <div className="w-32 h-6 mb-4 rounded shimmer-skeleton" />
-            <div className="grid sm:grid-cols-2 gap-2">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="h-14 rounded-xl shimmer-skeleton"
-                />
-              ))}
-            </div>
-          </div>
+        {/* Loading Bar */}
+        <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: '100%' }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            className="h-full w-1/2 bg-gradient-to-r from-primary to-premium-gold"
+          />
+        </div>
 
-          {/* Button Skeleton */}
-          <div className="w-full h-16 rounded-xl shimmer-skeleton" />
+        {/* Skeleton Cards */}
+        <div className="w-full max-w-md space-y-3 mt-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="glass rounded-xl p-4 shimmer-skeleton h-16" />
+          ))}
         </div>
       </div>
     </motion.div>

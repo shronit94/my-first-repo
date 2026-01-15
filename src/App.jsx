@@ -1,18 +1,29 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChefHat, RotateCcw, Sparkles } from 'lucide-react';
+import Header from './components/Header';
+import BottomNav from './components/BottomNav';
 import IngredientPicker from './components/IngredientPicker';
 import MagicRoulette from './components/MagicRoulette';
+import AITip from './components/AITip';
 import RecipeCard from './components/RecipeCard';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import { getRandomRecipe } from './utils/recipeApi';
 import { triggerConfetti } from './utils/confetti';
+
+const lazyTips = [
+  'Use frozen veggies to save 10 minutes of prep time tonight.',
+  'Pre-shredded cheese saves time (we won\'t tell).',
+  'Garlic powder > Fresh garlic when you\'re lazy.',
+  'Sheet pan meals = less dishes to wash.',
+  'Instant rice cooks in 90 seconds in the microwave.',
+];
 
 function App() {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentTip] = useState(lazyTips[Math.floor(Math.random() * lazyTips.length)]);
 
   const handleSpin = async () => {
     if (selectedIngredients.length === 0) return;
@@ -30,7 +41,7 @@ function App() {
       // Ensure minimum loading time for better UX
       const elapsedTime = Date.now() - startTime;
       if (elapsedTime < 2000) {
-        await new Promise(resolve => setTimeout(resolve, 2000 - elapsedTime));
+        await new Promise((resolve) => setTimeout(resolve, 2000 - elapsedTime));
       }
 
       setCurrentRecipe(recipe);
@@ -52,147 +63,104 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="relative flex min-h-screen w-full flex-col bg-mesh overflow-x-hidden pb-24 text-white font-display selection:bg-primary/30">
       {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
-      >
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <motion.div
-            animate={{ rotate: [0, -10, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <ChefHat size={48} className="text-purple-400" />
-          </motion.div>
-          <h1 className="text-5xl sm:text-6xl font-bold">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-              Pantry Roulette
-            </span>
-          </h1>
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-          >
-            <Sparkles size={48} className="text-pink-400" />
-          </motion.div>
-        </div>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Your lazy chef butler. Select ingredients, spin the wheel, and let AI find the perfect recipe for you.
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          No more decision fatigue. We do the research, you do the eating. 🎰
-        </p>
-      </motion.header>
+      <Header />
 
       {/* Main Content */}
-      <div className="space-y-8">
-        {/* Ingredient Picker */}
-        {!currentRecipe && (
+      {!currentRecipe ? (
+        <>
+          {/* Ingredient Picker */}
           <IngredientPicker
             selectedIngredients={selectedIngredients}
             onIngredientsChange={setSelectedIngredients}
           />
-        )}
 
-        {/* Magic Roulette Button */}
-        {!currentRecipe && (
-          <MagicRoulette
-            onSpin={handleSpin}
-            isLoading={isLoading}
-            disabled={selectedIngredients.length === 0}
-            selectedCount={selectedIngredients.length}
-          />
-        )}
-
-        {/* Loading State */}
-        {isLoading && <LoadingSkeleton />}
-
-        {/* Error State */}
-        <AnimatePresence>
-          {error && !isLoading && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="w-full max-w-6xl mx-auto"
-            >
-              <div className="glass-card p-8 text-center border-red-500/30">
-                <div className="text-6xl mb-4">😔</div>
-                <h3 className="text-2xl font-bold text-white mb-2">Oops!</h3>
-                <p className="text-gray-400 mb-6">{error}</p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleReset}
-                  className="glass-button px-6 py-3 text-white font-medium"
-                >
-                  Try Again
-                </motion.button>
-              </div>
-            </motion.div>
+          {/* Magic Roulette Button */}
+          {!isLoading && (
+            <MagicRoulette
+              onSpin={handleSpin}
+              isLoading={isLoading}
+              disabled={selectedIngredients.length === 0}
+              selectedCount={selectedIngredients.length}
+            />
           )}
-        </AnimatePresence>
 
-        {/* Recipe Card */}
-        <AnimatePresence mode="wait">
-          {currentRecipe && !isLoading && (
-            <>
-              <RecipeCard recipe={currentRecipe} />
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex-1 flex items-center justify-center">
+              <LoadingSkeleton />
+            </div>
+          )}
 
-              {/* Action Buttons */}
+          {/* AI Tip */}
+          {!isLoading && <AITip tip={currentTip} />}
+        </>
+      ) : (
+        <>
+          {/* Recipe Result */}
+          <AnimatePresence mode="wait">
+            {currentRecipe && !isLoading && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-6xl mx-auto flex flex-col sm:flex-row gap-4"
+                exit={{ opacity: 0, y: -20 }}
+                className="flex-1 px-6 py-4"
               >
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSpin}
-                  className="flex-1 glass-button py-4 px-6 text-white font-semibold flex items-center justify-center gap-2"
-                >
-                  <RotateCcw size={20} />
-                  Spin Again with Same Ingredients
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleReset}
-                  className="flex-1 backdrop-blur-md bg-purple-600/30 border border-purple-400/50 hover:bg-purple-600/40 py-4 px-6 rounded-xl text-white font-semibold transition-all duration-300 flex items-center justify-center gap-2"
-                >
-                  <ChefHat size={20} />
-                  Start Over with New Ingredients
-                </motion.button>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
+                <RecipeCard recipe={currentRecipe} />
 
-      {/* Footer */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="text-center mt-16 pb-8"
-      >
-        <p className="text-gray-500 text-sm">
-          Recipes powered by{' '}
-          <a
-            href="https://www.edamam.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-purple-400 hover:text-purple-300 transition-colors underline"
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-4">
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSpin}
+                    className="flex-1 glass py-4 px-6 rounded-2xl text-white font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-all"
+                  >
+                    <span className="material-symbols-outlined">refresh</span>
+                    Spin Again
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleReset}
+                    className="flex-1 bg-primary py-4 px-6 rounded-2xl text-white font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:opacity-90"
+                  >
+                    <span className="material-symbols-outlined">cooking</span>
+                    New Search
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
+
+      {/* Error State */}
+      <AnimatePresence>
+        {error && !isLoading && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="px-6 py-4"
           >
-            Edamam API
-          </a>
-        </p>
-        <p className="text-gray-600 text-xs mt-2">
-          Built for the lazy chef in all of us 🧑‍🍳
-        </p>
-      </motion.footer>
+            <div className="glass rounded-2xl p-8 text-center">
+              <div className="text-6xl mb-4">😔</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Oops!</h3>
+              <p className="text-white/60 mb-6">{error}</p>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={handleReset}
+                className="bg-primary px-6 py-3 rounded-xl text-white font-medium"
+              >
+                Try Again
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }
