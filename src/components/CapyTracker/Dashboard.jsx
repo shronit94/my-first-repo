@@ -36,11 +36,9 @@ const Dashboard = () => {
           <h1 style={{
             fontSize: '2.5rem',
             margin: '0 0 0.5rem 0',
-            color: 'var(--color-charcoal)',
-            background: 'red',
-            padding: '1rem'
+            color: 'var(--color-charcoal)'
           }}>
-            🔴 NEW VERSION LOADED 🔴
+            CapyTracker
           </h1>
           <p style={{
             fontSize: '1rem',
