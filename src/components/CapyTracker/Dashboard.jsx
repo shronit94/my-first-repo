@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Zap } from 'lucide-react';
+import { Sparkles, Heart } from 'lucide-react';
 import useStore from '../../store/useStore';
 import CozyCard from './CozyCard';
 import '../../styles/theme.css';
 
 const Dashboard = () => {
-  const lowSpoonMode = useStore((state) => state.lowSpoonMode);
-  const toggleLowSpoonMode = useStore((state) => state.toggleLowSpoonMode);
-  const spoons = useStore((state) => state.spoons);
-  const setSpoons = useStore((state) => state.setSpoons);
+  const gentleMode = useStore((state) => state.gentleMode);
+  const toggleGentleMode = useStore((state) => state.toggleGentleMode);
+  const energyLevel = useStore((state) => state.energyLevel);
+  const setEnergyLevel = useStore((state) => state.setEnergyLevel);
   const getTodaysOneThing = useStore((state) => state.getTodaysOneThing);
   const toggleTask = useStore((state) => state.toggleTask);
   const getProgress = useStore((state) => state.getProgress);
@@ -17,15 +17,20 @@ const Dashboard = () => {
   const progress = getProgress();
 
   const categoryIcons = {
-    Hygiene: '🚿',
     Home: '🏠',
     Wellness: '💚',
     Social: '🌸',
   };
 
+  const energyLevels = [
+    { value: 1, label: '🌿 Low', description: 'Taking it gentle today' },
+    { value: 2, label: '🍃 Medium', description: 'Steady and balanced' },
+    { value: 3, label: '✨ High', description: 'Feeling energized!' },
+  ];
+
   return (
     <div style={{ padding: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
-      {/* Header with Low Spoon Toggle */}
+      {/* Header with Gentle Mode Toggle */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -52,7 +57,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Low Spoon Mode Toggle */}
+        {/* Gentle Mode Toggle */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -62,19 +67,19 @@ const Dashboard = () => {
           borderRadius: '20px',
           border: '1px solid rgba(255, 255, 255, 0.3)',
         }}>
-          <Zap size={20} color="var(--color-terracotta-sunny)" />
+          <Heart size={20} color="var(--color-sage-bright)" />
           <span style={{
             fontSize: '0.9rem',
             fontWeight: '600',
             color: 'var(--color-charcoal)'
           }}>
-            Low Spoon Mode
+            Gentle Mode
           </span>
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={lowSpoonMode}
-              onChange={toggleLowSpoonMode}
+              checked={gentleMode}
+              onChange={toggleGentleMode}
             />
             <span className="toggle-slider"></span>
           </label>
@@ -128,42 +133,67 @@ const Dashboard = () => {
         </div>
       </CozyCard>
 
-      {/* Spoons Counter */}
+      {/* Energy Budget Selector */}
       <CozyCard style={{ marginBottom: '1.5rem' }}>
         <h3 style={{
           fontSize: '1.2rem',
           marginTop: 0,
-          marginBottom: '1rem',
+          marginBottom: '0.75rem',
           color: 'var(--color-charcoal)'
         }}>
-          How many spoons today? 🥄
+          Today's Energy Budget
         </h3>
+        <p style={{
+          fontSize: '0.9rem',
+          margin: '0 0 1rem 0',
+          color: 'var(--color-charcoal)',
+          opacity: 0.7
+        }}>
+          How are you feeling today? This helps us show you the right quests.
+        </p>
         <div style={{
           display: 'flex',
-          gap: '0.5rem',
+          gap: '0.75rem',
           flexWrap: 'wrap'
         }}>
-          {[0, 1, 2, 3, 4, 5].map((level) => (
+          {energyLevels.map((level) => (
             <motion.button
-              key={level}
-              whileHover={{ scale: 1.1 }}
+              key={level.value}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setSpoons(level)}
+              onClick={() => setEnergyLevel(level.value)}
               style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '12px',
-                border: 'none',
-                background: spoons === level
-                  ? 'var(--color-sage-bright)'
-                  : 'var(--color-sandstone-dark)',
-                color: spoons === level ? 'white' : 'var(--color-charcoal)',
+                flex: '1 1 auto',
+                minWidth: '140px',
+                padding: '1rem 1.25rem',
+                borderRadius: '16px',
+                border: energyLevel === level.value
+                  ? '3px solid var(--color-sage-bright)'
+                  : '2px solid var(--color-sandstone-dark)',
+                background: energyLevel === level.value
+                  ? 'var(--color-glass-white)'
+                  : 'white',
+                color: 'var(--color-charcoal)',
                 fontWeight: '600',
                 cursor: 'pointer',
                 fontSize: '1rem',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.25rem'
               }}
             >
-              {level} {level === 1 ? 'spoon' : 'spoons'}
+              <span style={{ fontSize: '1.1rem' }}>{level.label}</span>
+              {energyLevel === level.value && (
+                <span style={{
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  opacity: 0.7
+                }}>
+                  {level.description}
+                </span>
+              )}
             </motion.button>
           ))}
         </div>
@@ -188,7 +218,7 @@ const Dashboard = () => {
                 marginBottom: '0.75rem',
                 color: 'var(--color-charcoal)'
               }}>
-                Today's One Thing
+                Maybe start here?
               </h3>
               <div style={{
                 display: 'flex',
@@ -240,7 +270,7 @@ const Dashboard = () => {
             color: 'var(--color-charcoal)',
             opacity: 0.7
           }}>
-            You're crushing it today! Add some quests below to keep going.
+            You're crushing it today! Would you like to add some more quests?
           </p>
         </CozyCard>
       )}

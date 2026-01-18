@@ -1,115 +1,115 @@
-import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, X } from 'lucide-react';
 import useStore from '../../store/useStore';
 import CozyCard from './CozyCard';
 import '../../styles/theme.css';
 
 const TemplateLibrary = () => {
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const addTasksFromTemplate = useStore((state) => state.addTasksFromTemplate);
 
   const templates = [
     {
       id: 1,
-      title: "The 'I Haven't Showered in 3 Days' List",
-      emoji: '🚿',
-      description: 'Basic hygiene reset for when executive function has left the chat',
+      title: '🍽️ Kitchen Recovery',
+      emoji: '🍽️',
+      description: 'Get your kitchen back to functional without overwhelm',
       tasks: [
-        { title: 'Take a shower (even if it\'s just 2 minutes)', category: 'Hygiene', priority: 'high' },
-        { title: 'Brush teeth', category: 'Hygiene', priority: 'high' },
-        { title: 'Put on fresh clothes', category: 'Hygiene', priority: 'normal' },
-        { title: 'Drink a full glass of water', category: 'Wellness', priority: 'normal' },
+        { title: '🧼 Clear the sink', category: 'Home', energyCost: 2, priority: 'normal' },
+        { title: '🗑️ Take out the trash', category: 'Home', energyCost: 1, priority: 'normal' },
+        { title: '✨ Wipe down one counter', category: 'Home', energyCost: 1, priority: 'normal' },
+        { title: '🧽 Wash dishes for next meal', category: 'Home', energyCost: 2, priority: 'normal' },
+        { title: '💧 Fill up a water bottle or pitcher', category: 'Wellness', energyCost: 1, priority: 'normal' },
       ],
     },
     {
       id: 2,
-      title: 'Kitchen Disaster Recovery',
-      emoji: '🧼',
-      description: 'For when the dishes have achieved sentience',
+      title: '☀️ Morning Routine',
+      emoji: '☀️',
+      description: 'Ease into your day with gentle, grounding steps',
       tasks: [
-        { title: 'Clear the absolute worst dishes into the sink', category: 'Home', priority: 'emergency' },
-        { title: 'Run the dishwasher OR wash 5 dishes', category: 'Home', priority: 'high' },
-        { title: 'Wipe down one counter', category: 'Home', priority: 'normal' },
-        { title: 'Take out the trash', category: 'Home', priority: 'normal' },
+        { title: '📵 No phone for 15 minutes', category: 'Wellness', energyCost: 2, priority: 'normal' },
+        { title: '🚿 Quick shower or face rinse', category: 'Wellness', energyCost: 2, priority: 'normal' },
+        { title: '☕ Make your favorite morning beverage', category: 'Wellness', energyCost: 1, priority: 'normal' },
+        { title: '🎵 Put on mood-lifting music', category: 'Wellness', energyCost: 1, priority: 'normal' },
+        { title: '📝 Write down one thing you\'re grateful for', category: 'Wellness', energyCost: 1, priority: 'normal' },
       ],
     },
     {
       id: 3,
-      title: 'Gentle Morning Routine',
-      emoji: '☀️',
-      description: 'Ease into your day without overwhelming yourself',
+      title: '👕 Laundry Tackle',
+      emoji: '👕',
+      description: 'One step at a time toward clean clothes',
       tasks: [
-        { title: 'Sit up in bed and take 3 deep breaths', category: 'Wellness', priority: 'normal' },
-        { title: 'Drink water from bedside table', category: 'Wellness', priority: 'normal' },
-        { title: 'Open curtains for natural light', category: 'Wellness', priority: 'low' },
-        { title: 'Eat ANYTHING for breakfast', category: 'Wellness', priority: 'normal' },
+        { title: '🧺 Gather dirty clothes into one pile', category: 'Home', energyCost: 2, priority: 'high' },
+        { title: '🔄 Start one load of laundry', category: 'Home', energyCost: 2, priority: 'high' },
+        { title: '👔 Put away clean items (just 5 minutes)', category: 'Home', energyCost: 2, priority: 'normal' },
+        { title: '🧦 Match socks while watching something', category: 'Home', energyCost: 1, priority: 'low' },
       ],
     },
     {
       id: 4,
-      title: 'Laundry Mountain Tackle',
-      emoji: '👕',
-      description: 'One step at a time toward clean clothes',
+      title: '💬 Social Recharge',
+      emoji: '💬',
+      description: 'Low-effort ways to stay connected',
       tasks: [
-        { title: 'Gather dirty clothes into one pile', category: 'Home', priority: 'high' },
-        { title: 'Start ONE load of laundry', category: 'Home', priority: 'high' },
-        { title: 'Set timer to move laundry to dryer', category: 'Home', priority: 'normal' },
-        { title: 'Put away 5 clean items', category: 'Home', priority: 'low' },
+        { title: '📱 Send a quick message to someone', category: 'Social', energyCost: 1, priority: 'normal' },
+        { title: '🎧 Spend 15 minutes doing something you enjoy alone', category: 'Wellness', energyCost: 1, priority: 'normal' },
+        { title: '☕ Have a low-pressure interaction (coffee chat, quick call)', category: 'Social', energyCost: 2, priority: 'low' },
       ],
     },
     {
       id: 5,
-      title: 'Social Battery Recharge',
-      emoji: '🔋',
-      description: 'Low-effort ways to maintain connections',
+      title: '🛏️ Bedroom Rescue',
+      emoji: '🛏️',
+      description: 'Create a cozy sanctuary for rest',
       tasks: [
-        { title: 'Reply to one text message', category: 'Social', priority: 'normal' },
-        { title: 'Send a meme to a friend', category: 'Social', priority: 'low' },
-        { title: 'Like some posts on social media', category: 'Social', priority: 'low' },
-        { title: 'Schedule a call (don\'t have to do it today!)', category: 'Social', priority: 'low' },
+        { title: '🛏️ Change your sheets', category: 'Home', energyCost: 3, priority: 'normal' },
+        { title: '👕 Pick up clothes from the floor', category: 'Home', energyCost: 2, priority: 'normal' },
+        { title: '🗑️ Clear trash and dishes from your room', category: 'Home', energyCost: 1, priority: 'normal' },
+        { title: '✨ Wipe down your nightstand', category: 'Home', energyCost: 1, priority: 'low' },
+        { title: '🪟 Open window to air out the room', category: 'Wellness', energyCost: 1, priority: 'low' },
       ],
     },
     {
       id: 6,
-      title: 'Bedroom Rescue Mission',
-      emoji: '🛏️',
-      description: 'Create a cozy sanctuary for rest',
+      title: '🧖 Self-Care Sampler',
+      emoji: '🧖',
+      description: 'Gentle acts of care for yourself',
       tasks: [
-        { title: 'Make the bed (or just pull up the covers)', category: 'Home', priority: 'normal' },
-        { title: 'Put away 10 items from the floor', category: 'Home', priority: 'normal' },
-        { title: 'Open window for fresh air', category: 'Home', priority: 'low' },
-        { title: 'Fluff pillows and straighten sheets', category: 'Home', priority: 'low' },
+        { title: '🚿 Take a shower or wash your face', category: 'Wellness', energyCost: 2, priority: 'normal' },
+        { title: '🪥 Brush your teeth and floss', category: 'Wellness', energyCost: 1, priority: 'normal' },
+        { title: '💅 Trim nails or do light grooming', category: 'Wellness', energyCost: 1, priority: 'low' },
+        { title: '🧴 Apply lotion or moisturizer', category: 'Wellness', energyCost: 1, priority: 'low' },
+        { title: '🛌 Lay out clothes for tomorrow', category: 'Wellness', energyCost: 1, priority: 'low' },
       ],
     },
     {
       id: 7,
-      title: 'Self-Care Sampler',
-      emoji: '💆',
-      description: 'Gentle acts of kindness for yourself',
-      tasks: [
-        { title: 'Do a 5-minute stretch or gentle movement', category: 'Wellness', priority: 'normal' },
-        { title: 'Apply lotion or lip balm', category: 'Hygiene', priority: 'low' },
-        { title: 'Listen to your favorite song', category: 'Wellness', priority: 'low' },
-        { title: 'Say one nice thing about yourself', category: 'Wellness', priority: 'normal' },
-      ],
-    },
-    {
-      id: 8,
-      title: 'Emergency Adulting Speedrun',
+      title: '⚡ Emergency Speedrun',
       emoji: '⚡',
-      description: 'When you have 15 minutes before company arrives',
+      description: 'Quick wins when time or energy is tight',
       tasks: [
-        { title: 'Hide visible mess in one closet/room', category: 'Home', priority: 'emergency' },
-        { title: 'Spray air freshener', category: 'Home', priority: 'emergency' },
-        { title: 'Quick bathroom wipe-down', category: 'Home', priority: 'high' },
-        { title: 'Put on "presentable" outfit', category: 'Hygiene', priority: 'high' },
+        { title: '📧 Respond to one important email or message', category: 'Social', energyCost: 2, priority: 'high' },
+        { title: '💳 Pay one bill that\'s been nagging you', category: 'Home', energyCost: 2, priority: 'high' },
+        { title: '📅 Schedule one appointment you\'ve been avoiding', category: 'Wellness', energyCost: 2, priority: 'normal' },
+        { title: '📞 Make the call you\'ve been putting off', category: 'Social', energyCost: 3, priority: 'normal' },
+        { title: '📝 Write down your top 3 priorities for tomorrow', category: 'Wellness', energyCost: 1, priority: 'normal' },
       ],
     },
   ];
 
   const handleUseTemplate = (template) => {
     addTasksFromTemplate(template.tasks);
-    // Optional: Show a success message or confetti
+    setSelectedTemplate(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const energyCostLabels = {
+    1: '🌿',
+    2: '🍃',
+    3: '✨',
   };
 
   return (
@@ -120,7 +120,7 @@ const TemplateLibrary = () => {
           margin: '0 0 0.5rem 0',
           color: 'var(--color-charcoal)'
         }}>
-          Adulting Templates
+          Quest Bundles
         </h2>
         <p style={{
           fontSize: '1rem',
@@ -128,7 +128,7 @@ const TemplateLibrary = () => {
           color: 'var(--color-charcoal)',
           opacity: 0.7
         }}>
-          Pre-made quest lists for common adulting scenarios. Click to add all tasks to your list!
+          Pre-made quest collections for common situations. Click to preview and add!
         </p>
       </div>
 
@@ -146,7 +146,7 @@ const TemplateLibrary = () => {
           >
             <CozyCard
               variant="sticker"
-              onClick={() => handleUseTemplate(template)}
+              onClick={() => setSelectedTemplate(template)}
               style={{
                 height: '100%',
                 display: 'flex',
@@ -208,6 +208,172 @@ const TemplateLibrary = () => {
           </motion.div>
         ))}
       </div>
+
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {selectedTemplate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedTemplate(null)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--color-sandstone-light)',
+                borderRadius: 'var(--radius-sticker)',
+                padding: '2rem',
+                maxWidth: '600px',
+                width: '100%',
+                maxHeight: '80vh',
+                overflowY: 'auto',
+                position: 'relative',
+                border: '3px solid var(--color-sage-bright)',
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedTemplate(null)}
+                style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1rem',
+                  background: 'var(--color-sandstone-dark)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <X size={20} color="var(--color-charcoal)" />
+              </button>
+
+              {/* Template Header */}
+              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>
+                  {selectedTemplate.emoji}
+                </div>
+                <h2 style={{
+                  fontSize: '1.8rem',
+                  margin: '0 0 0.5rem 0',
+                  color: 'var(--color-charcoal)'
+                }}>
+                  {selectedTemplate.title}
+                </h2>
+                <p style={{
+                  fontSize: '1rem',
+                  margin: 0,
+                  color: 'var(--color-charcoal)',
+                  opacity: 0.7
+                }}>
+                  {selectedTemplate.description}
+                </p>
+              </div>
+
+              {/* Task Preview List */}
+              <div style={{
+                marginBottom: '1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem'
+              }}>
+                <h3 style={{
+                  fontSize: '1.1rem',
+                  margin: '0 0 0.75rem 0',
+                  color: 'var(--color-charcoal)'
+                }}>
+                  What's included:
+                </h3>
+                {selectedTemplate.tasks.map((task, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      padding: '0.75rem 1rem',
+                      background: 'white',
+                      borderRadius: '12px',
+                      border: '2px solid var(--color-sandstone-dark)'
+                    }}
+                  >
+                    <span style={{
+                      fontSize: '1.2rem',
+                      minWidth: '24px',
+                      textAlign: 'center'
+                    }}>
+                      {energyCostLabels[task.energyCost]}
+                    </span>
+                    <span style={{
+                      flex: 1,
+                      fontSize: '0.95rem',
+                      color: 'var(--color-charcoal)',
+                      fontWeight: '500'
+                    }}>
+                      {task.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '0.75rem'
+              }}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleUseTemplate(selectedTemplate)}
+                  className="btn-primary"
+                  style={{
+                    flex: 1,
+                    padding: '1rem'
+                  }}
+                >
+                  Add to My Quests
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedTemplate(null)}
+                  className="btn-secondary"
+                  style={{
+                    flex: 1,
+                    padding: '1rem'
+                  }}
+                >
+                  Maybe Later
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0 }}

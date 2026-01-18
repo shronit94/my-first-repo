@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Check, Droplet, Home, Heart, Users } from 'lucide-react';
+import { Plus, Trash2, Check, Home, Heart, Users } from 'lucide-react';
 import useStore from '../../store/useStore';
 import CozyCard from './CozyCard';
 import '../../styles/theme.css';
@@ -9,6 +9,7 @@ const QuestList = () => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskCategory, setNewTaskCategory] = useState('Wellness');
   const [newTaskPriority, setNewTaskPriority] = useState('normal');
+  const [newTaskEnergyCost, setNewTaskEnergyCost] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
 
   const getVisibleTasks = useStore((state) => state.getVisibleTasks);
@@ -16,14 +17,13 @@ const QuestList = () => {
   const toggleTask = useStore((state) => state.toggleTask);
   const deleteTask = useStore((state) => state.deleteTask);
   const clearCompleted = useStore((state) => state.clearCompleted);
-  const lowSpoonMode = useStore((state) => state.lowSpoonMode);
+  const gentleMode = useStore((state) => state.gentleMode);
   const allTasks = useStore((state) => state.tasks);
 
   const visibleTasks = getVisibleTasks();
   const completedTasks = allTasks.filter((task) => task.status === 'done');
 
   const categoryConfig = {
-    Hygiene: { icon: Droplet, color: 'var(--color-sage-bright)', emoji: '🚿' },
     Home: { icon: Home, color: 'var(--color-terracotta-sunny)', emoji: '🏠' },
     Wellness: { icon: Heart, color: 'var(--color-sage-bright)', emoji: '💚' },
     Social: { icon: Users, color: 'var(--color-terracotta-sunny)', emoji: '🌸' },
@@ -36,6 +36,12 @@ const QuestList = () => {
     low: '🍃 Low',
   };
 
+  const energyCostLabels = {
+    1: '🌿 Low Energy',
+    2: '🍃 Medium Energy',
+    3: '✨ High Energy',
+  };
+
   const handleAddTask = (e) => {
     e.preventDefault();
     if (newTaskTitle.trim()) {
@@ -43,9 +49,11 @@ const QuestList = () => {
         title: newTaskTitle,
         category: newTaskCategory,
         priority: newTaskPriority,
+        energyCost: newTaskEnergyCost,
       });
       setNewTaskTitle('');
       setNewTaskPriority('normal');
+      setNewTaskEnergyCost(1);
       setShowAddForm(false);
     }
   };
@@ -65,7 +73,7 @@ const QuestList = () => {
           margin: 0,
           color: 'var(--color-charcoal)'
         }}>
-          Your Quests {lowSpoonMode && <span style={{ fontSize: '1rem', opacity: 0.6 }}>(Top 3)</span>}
+          Your Quests {gentleMode && <span style={{ fontSize: '1rem', opacity: 0.6 }}>(Top 3)</span>}
         </h2>
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -125,7 +133,7 @@ const QuestList = () => {
 
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
                   gap: '1rem',
                   marginBottom: '1rem'
                 }}>
@@ -188,6 +196,39 @@ const QuestList = () => {
                       }}
                     >
                       {Object.entries(priorityLabels).map(([key, label]) => (
+                        <option key={key} value={key}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.9rem',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      color: 'var(--color-charcoal)'
+                    }}>
+                      Energy Cost
+                    </label>
+                    <select
+                      value={newTaskEnergyCost}
+                      onChange={(e) => setNewTaskEnergyCost(parseInt(e.target.value))}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        borderRadius: '12px',
+                        border: '2px solid var(--color-sandstone-dark)',
+                        fontSize: '1rem',
+                        fontFamily: 'var(--font-body)',
+                        background: 'white',
+                        color: 'var(--color-charcoal)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {Object.entries(energyCostLabels).map(([key, label]) => (
                         <option key={key} value={key}>
                           {label}
                         </option>
@@ -296,6 +337,16 @@ const QuestList = () => {
                           {priorityLabels[task.priority]}
                         </span>
                       )}
+                      <span style={{
+                        fontSize: '0.8rem',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '8px',
+                        background: 'var(--color-sandstone-dark)',
+                        color: 'var(--color-charcoal)',
+                        fontWeight: '600'
+                      }}>
+                        {energyCostLabels[task.energyCost || 1]}
+                      </span>
                     </div>
                   </div>
 
@@ -355,7 +406,7 @@ const QuestList = () => {
               color: 'var(--color-charcoal)',
               opacity: 0.7
             }}>
-              No quests yet. Add one to get started!
+              No quests yet. Would you like to add one to get started?
             </p>
           </CozyCard>
         )}
