@@ -1,0 +1,11 @@
+/* Import the CapyTracker theme */
+@import './styles/theme.css';
+
+/* Global resets and base styles */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
