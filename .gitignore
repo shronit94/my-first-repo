@@ -34,3 +34,9 @@ dist-ssr
 # Build outputs
 build
 .cache
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
