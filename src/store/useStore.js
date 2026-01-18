@@ -1,32 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Baseline tasks for each energy level
-const BASELINE_TASKS = {
-  1: [ // Low 🌿
-    { title: '💧 Sip a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
-    { title: '☀️ Let some light in', category: 'Home', energyCost: 1, priority: 'normal' },
-    { title: '🌬️ Take 1 minute to breathe deeply or gently stretch', category: 'Wellness', energyCost: 1, priority: 'normal' },
-  ],
-  2: [ // Medium 🍃
-    { title: '💧 Hydrate with a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
-    { title: '🛏️ Smooth out your bed covers', category: 'Home', energyCost: 1, priority: 'normal' },
-    { title: '🍎 Enjoy a piece of fruit or some veggies', category: 'Wellness', energyCost: 2, priority: 'normal' },
-    { title: '🌿 Get 5 minutes of fresh air', category: 'Wellness', energyCost: 2, priority: 'normal' },
-    { title: '✨ Clear off one small spot that\'s been bugging you', category: 'Home', energyCost: 2, priority: 'normal' },
-  ],
-  3: [ // High ✨
-    { title: '💧 Start your day with a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
-    { title: '🛏️ Make your bed feel cozy', category: 'Home', energyCost: 2, priority: 'normal' },
-    { title: '🥗 Treat yourself to something fresh', category: 'Wellness', energyCost: 2, priority: 'normal' },
-    { title: '🚶 Take a 10-15 minute walk', category: 'Wellness', energyCost: 3, priority: 'normal' },
-    { title: '🏠 Tackle one thing around the house', category: 'Home', energyCost: 3, priority: 'normal' },
-    { title: '💬 Reach out to someone you care about', category: 'Social', energyCost: 2, priority: 'normal' },
-    { title: '🎨 Spend 10 minutes doing something you enjoy', category: 'Wellness', energyCost: 2, priority: 'normal' },
-    { title: '🍳 Put together or plan a nourishing meal', category: 'Wellness', energyCost: 3, priority: 'normal' },
-  ],
-};
-
 const useStore = create(
   persist(
     (set, get) => ({
@@ -102,31 +76,7 @@ const useStore = create(
       lastCompletedTask: null,
 
       setEnergyLevel: (value) => {
-        const currentTasks = get().tasks;
-        const incompleteTasks = currentTasks.filter((task) => task.status === 'todo');
-
-        // Auto-populate baseline tasks if list is empty
-        if (incompleteTasks.length === 0) {
-          const baselineTasks = BASELINE_TASKS[value] || [];
-          set({
-            energyLevel: value,
-            tasks: [
-              ...currentTasks,
-              ...baselineTasks.map((task, index) => ({
-                id: Date.now() + index + Math.random(),
-                title: task.title,
-                category: task.category,
-                status: 'todo',
-                priority: task.priority,
-                energyCost: task.energyCost,
-                createdAt: new Date().toISOString(),
-                isBaseline: true, // Mark as baseline task
-              })),
-            ],
-          });
-        } else {
-          set({ energyLevel: value });
-        }
+        set({ energyLevel: value });
       },
 
       // Gentle Mode (formerly Low Spoon Mode)
@@ -182,7 +132,7 @@ const useStore = create(
       },
     }),
     {
-      name: 'capytracker-storage', // LocalStorage key
+      name: 'capytracker-storage-v2', // Changed storage key to force reset
     }
   )
 );
