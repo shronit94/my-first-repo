@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const COMMON_INGREDIENTS = [
   { name: 'Onion', icon: 'energy_savings_leaf' },
@@ -24,6 +24,7 @@ const COMMON_INGREDIENTS = [
 
 const IngredientPicker = ({ selectedIngredients, onIngredientsChange }) => {
   const [customIngredient, setCustomIngredient] = useState('');
+  const [showPhotoWarning, setShowPhotoWarning] = useState(false);
 
   const toggleIngredient = (ingredientName) => {
     if (selectedIngredients.includes(ingredientName)) {
@@ -46,6 +47,37 @@ const IngredientPicker = ({ selectedIngredients, onIngredientsChange }) => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Check if dropped items contain files/images
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      setShowPhotoWarning(true);
+      setTimeout(() => setShowPhotoWarning(false), 3000);
+    }
+  };
+
+  const handlePaste = (e) => {
+    // Check if clipboard contains image data
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          e.preventDefault();
+          setShowPhotoWarning(true);
+          setTimeout(() => setShowPhotoWarning(false), 3000);
+          return;
+        }
+      }
+    }
+  };
+
   return (
     <div className="px-6">
       {/* Headline */}
@@ -60,7 +92,11 @@ const IngredientPicker = ({ selectedIngredients, onIngredientsChange }) => {
 
       {/* Search Input */}
       <div className="py-2">
-        <div className="glass rounded-2xl flex items-center px-4 h-14 w-full group focus-within:border-primary/50 transition-all">
+        <div
+          className="glass rounded-2xl flex items-center px-4 h-14 w-full group focus-within:border-primary/50 transition-all"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
           <span className="material-symbols-outlined text-white/40 group-focus-within:text-primary transition-colors">
             search
           </span>
@@ -69,11 +105,29 @@ const IngredientPicker = ({ selectedIngredients, onIngredientsChange }) => {
             value={customIngredient}
             onChange={(e) => setCustomIngredient(e.target.value)}
             onKeyPress={handleKeyPress}
+            onPaste={handlePaste}
             className="w-full bg-transparent border-none focus:ring-0 text-white placeholder:text-white/30 text-base font-medium px-3 outline-none"
             placeholder="Add custom ingredients..."
           />
           <span className="material-symbols-outlined text-white/40">mic</span>
         </div>
+
+        {/* Photo Warning Message */}
+        <AnimatePresence>
+          {showPhotoWarning && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-2 glass rounded-xl p-3 flex items-center gap-2 border border-amber-500/30"
+            >
+              <span className="material-symbols-outlined text-amber-400 text-xl">info</span>
+              <p className="text-sm text-white/80">
+                Photo upload isn't supported yet. Please type ingredient names instead.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Chips Section */}
