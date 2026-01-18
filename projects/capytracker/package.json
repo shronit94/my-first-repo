@@ -1,15 +1,15 @@
 {
-  "name": "pantry-roulette",
+  "name": "capytracker",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "CapyTracker - Your Cozy Life Planner for making adulting a little less hard",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "canvas-confetti": "^1.9.2",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
