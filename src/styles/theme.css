@@ -1,0 +1,158 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+  /* Core Palette - Playful & Vibrant Version */
+  --color-sandstone-light: #FDF9F3; /* Background base */
+  --color-sandstone-dark: #F2E8D5; /* Secondary containers */
+  --color-sage-bright: #8DAA91; /* Primary accents & Success */
+  --color-terracotta-sunny: #D98B74; /* Action buttons & Highlights */
+  --color-terracotta-glow: rgba(217, 139, 116, 0.15);
+  --color-charcoal: #333333; /* High-readability text */
+  --color-glass-white: rgba(255, 255, 255, 0.7);
+
+  /* Typography */
+  --font-header: 'Playfair Display', serif;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Spacing & Borders */
+  --radius-sticker: 24px;
+  --border-wobbly: 3px solid var(--color-charcoal);
+  --shadow-cozy: 0 8px 32px 0 rgba(141, 170, 145, 0.1);
+}
+
+body {
+  background-color: var(--color-sandstone-light);
+  background-image: radial-gradient(var(--color-charcoal) 0.5px, transparent 0.5px);
+  background-size: 24px 24px; /* Dot grid pattern */
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-header);
+  font-weight: 700;
+}
+
+/* Cozy Card Base */
+.cozy-card {
+  background: var(--color-glass-white);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-sticker);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-cozy);
+  padding: 2rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Playful 'Sticker' Variant - Slightly Tilted */
+.cozy-card--sticker {
+  border: var(--border-wobbly);
+  transform: rotate(-1deg);
+}
+
+.cozy-card--sticker:hover {
+  transform: rotate(1deg) scale(1.02);
+  cursor: pointer;
+}
+
+/* The 'I Can't Even' Emergency Highlight */
+.cozy-card--emergency {
+  border: 3px solid var(--color-terracotta-sunny);
+  box-shadow: 0 0 20px var(--color-terracotta-glow);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--color-terracotta-sunny);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px var(--color-terracotta-glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: var(--color-sage-bright);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-secondary:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-sandstone-dark);
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--color-sage-bright);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
