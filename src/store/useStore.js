@@ -1,6 +1,32 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+// Baseline tasks for each energy level
+const BASELINE_TASKS = {
+  1: [ // Low 🌿
+    { title: '💧 Sip a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
+    { title: '☀️ Let some light in (open your curtains or blinds)', category: 'Home', energyCost: 1, priority: 'normal' },
+    { title: '🌬️ Take 1 minute to breathe deeply or gently stretch', category: 'Wellness', energyCost: 1, priority: 'normal' },
+  ],
+  2: [ // Medium 🍃
+    { title: '💧 Hydrate with a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
+    { title: '🛏️ Smooth out your bed covers', category: 'Home', energyCost: 1, priority: 'normal' },
+    { title: '🍎 Enjoy a piece of fruit or some veggies', category: 'Wellness', energyCost: 2, priority: 'normal' },
+    { title: '🌿 Get 5 minutes of fresh air (even just at your door or window)', category: 'Wellness', energyCost: 2, priority: 'normal' },
+    { title: '✨ Clear off one small spot that\'s been bugging you', category: 'Home', energyCost: 2, priority: 'normal' },
+  ],
+  3: [ // High ✨
+    { title: '💧 Start your day with a glass of water', category: 'Wellness', energyCost: 1, priority: 'normal' },
+    { title: '🛏️ Make your bed feel cozy', category: 'Home', energyCost: 2, priority: 'normal' },
+    { title: '🥗 Treat yourself to something fresh (fruit or veggies)', category: 'Wellness', energyCost: 2, priority: 'normal' },
+    { title: '🚶 Take a 10-15 minute walk around your neighborhood', category: 'Wellness', energyCost: 3, priority: 'normal' },
+    { title: '🏠 Tackle one thing around the house that needs doing', category: 'Home', energyCost: 3, priority: 'normal' },
+    { title: '💬 Reach out to someone you care about (a quick text counts!)', category: 'Social', energyCost: 2, priority: 'normal' },
+    { title: '🎨 Spend 10 minutes doing something you enjoy', category: 'Wellness', energyCost: 2, priority: 'normal' },
+    { title: '🍳 Put together or plan a nourishing meal', category: 'Wellness', energyCost: 3, priority: 'normal' },
+  ],
+};
+
 const useStore = create(
   persist(
     (set, get) => ({
@@ -64,6 +90,43 @@ const useStore = create(
             })),
           ],
         })),
+
+      // Replace all tasks with baseline tasks
+      replaceWithBaseline: (energyLevel) => {
+        const baselineTasks = BASELINE_TASKS[energyLevel] || [];
+        set({
+          tasks: baselineTasks.map((task, index) => ({
+            id: Date.now() + index + Math.random(),
+            title: task.title,
+            category: task.category,
+            status: 'todo',
+            priority: task.priority,
+            energyCost: task.energyCost,
+            createdAt: new Date().toISOString(),
+            isBaseline: true,
+          })),
+        });
+      },
+
+      // Add baseline tasks to existing tasks
+      addBaselineToExisting: (energyLevel) => {
+        const baselineTasks = BASELINE_TASKS[energyLevel] || [];
+        set((state) => ({
+          tasks: [
+            ...state.tasks,
+            ...baselineTasks.map((task, index) => ({
+              id: Date.now() + index + Math.random(),
+              title: task.title,
+              category: task.category,
+              status: 'todo',
+              priority: task.priority,
+              energyCost: task.energyCost,
+              createdAt: new Date().toISOString(),
+              isBaseline: true,
+            })),
+          ],
+        }));
+      },
 
       // Clear all completed tasks
       clearCompleted: () =>
@@ -129,6 +192,12 @@ const useStore = create(
         });
 
         return sorted[0];
+      },
+
+      // Get incomplete tasks count
+      getIncompleteTasksCount: () => {
+        const { tasks } = get();
+        return tasks.filter((task) => task.status === 'todo').length;
       },
     }),
     {
